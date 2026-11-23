@@ -142,6 +142,22 @@
   .entry .when{color:var(--muted);font-size:.9rem}
   .entry p{color:var(--muted);margin-top:6px}
 
+  /* ===== الأقسام المدمجة (أكورديون) ===== */
+  .panel{border:1px solid var(--stroke);border-radius:20px;background:rgba(255,255,255,.04);margin-bottom:16px;overflow:hidden;transition:background .3s ease}
+  .panel:last-child{margin-bottom:0}
+  .panel.open{background:rgba(255,255,255,.07)}
+  .panel-btn{width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;
+    padding:18px 22px;background:none;border:0;color:var(--text);font-family:inherit;font-size:1.25rem;font-weight:700;cursor:pointer;text-align:right}
+  .panel-btn .ico{flex:0 0 auto;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-size:1.5rem;line-height:1;
+    box-shadow:0 8px 20px rgba(124,92,255,.35);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+  .panel.open .ico{transform:rotate(135deg)}
+  .panel-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s ease}
+  .panel.open .panel-body{grid-template-rows:1fr}
+  .panel-inner{min-height:0;overflow:hidden;padding:0 22px;transition:padding .5s ease}
+  .panel.open .panel-inner{padding:0 22px 24px}
+  .panel-inner .timeline{padding-top:6px}
+
   footer{text-align:center;color:var(--muted);padding:40px 20px 50px;font-size:.92rem}
   footer a{color:var(--a2);text-decoration:none;font-weight:700}
 
@@ -428,22 +444,6 @@ const DATA = {
     sections.push(card("about", "نبذة عني",
       `<p class="about">${esc(d.about)}</p>`));
 
-    sections.push(card("skills", "المهارات",
-      `<div class="skills">${d.skills.map(s => `<span class="skill">${esc(s)}</span>`).join("")}</div>`));
-
-    sections.push(card("projects", "أعمالي ومشاريعي",
-      `<div class="grid">
-        ${d.projects.map(p => `
-          <article class="item" data-tilt>
-            ${p.image ? `<img class="thumb" src="${esc(p.image)}" alt="${esc(p.title)}">` : ""}
-            <div class="item-body">
-              <h3>${esc(p.title)}</h3>
-              <p>${esc(p.desc)}</p>
-              ${p.link ? `<a class="link" href="${esc(p.link)}" target="_blank" rel="noopener">عرض المشروع ←</a>` : ""}
-            </div>
-          </article>`).join("")}
-      </div>`));
-
     const entriesHtml = (arr) => `
       <div class="timeline">
         ${arr.map(e => `
@@ -455,8 +455,34 @@ const DATA = {
           </div>`).join("")}
       </div>`;
 
-    sections.push(card("experience", "الخبرات العملية", entriesHtml(d.experience)));
-    sections.push(card("education", "المؤهلات والتعليم", entriesHtml(d.education)));
+    const panel = (id, title, body) => `
+      <div class="panel" id="${id}">
+        <button class="panel-btn" type="button" aria-expanded="false">
+          <span>${esc(title)}</span><span class="ico">+</span>
+        </button>
+        <div class="panel-body"><div class="panel-inner">${body}</div></div>
+      </div>`;
+
+    const skillsHtml = `<div class="skills">${d.skills.map(s => `<span class="skill">${esc(s)}</span>`).join("")}</div>`;
+
+    const projectsHtml = `<div class="grid">
+        ${d.projects.map(p => `
+          <article class="item" data-tilt>
+            ${p.image ? `<img class="thumb" src="${esc(p.image)}" alt="${esc(p.title)}">` : ""}
+            <div class="item-body">
+              <h3>${esc(p.title)}</h3>
+              <p>${esc(p.desc)}</p>
+              ${p.link ? `<a class="link" href="${esc(p.link)}" target="_blank" rel="noopener">عرض المشروع ←</a>` : ""}
+            </div>
+          </article>`).join("")}
+      </div>`;
+
+    sections.push(card("more", "مهاراتي وأعمالي وخبراتي",
+      panel("p-skills", "المهارات", skillsHtml) +
+      panel("p-projects", "أعمالي ومشاريعي", projectsHtml) +
+      panel("p-exp", "الخبرات العملية", entriesHtml(d.experience)) +
+      panel("p-edu", "المؤهلات والتعليم", entriesHtml(d.education))
+    ));
 
     document.getElementById("content").innerHTML = sections.join("");
 
@@ -508,6 +534,14 @@ const DATA = {
       const y = (e.clientY / window.innerHeight - 0.5) * -10;
       hero.style.transform = `rotateX(${y}deg) rotateY(${x}deg)`;
     }
+  });
+
+  document.addEventListener("click", e => {
+    const btn = e.target.closest ? e.target.closest(".panel-btn") : null;
+    if (!btn) return;
+    const p = btn.closest(".panel");
+    const open = p.classList.toggle("open");
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
   });
 
   document.addEventListener("mouseout", e => {
