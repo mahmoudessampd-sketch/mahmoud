@@ -153,6 +153,15 @@
   .panel.open .panel-inner{padding:0 22px 24px}
   .panel-inner .timeline{padding-top:6px}
 
+  .exp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .exp-card{padding:20px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid var(--stroke);transition:transform .3s ease,background .3s ease}
+  .exp-card:hover{transform:translateY(-4px);background:rgba(255,255,255,.09)}
+  .exp-num{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;margin-bottom:12px;
+    background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-weight:800;font-size:1.05rem}
+  .exp-card h3{font-size:1.05rem;font-weight:700}
+  .exp-card .org{color:#b9a8ff;font-weight:500;font-size:.95rem}
+  .exp-card .when{color:var(--muted);font-size:.85rem}
+  .exp-card p{color:var(--muted);font-size:.93rem;margin-top:6px}
   footer{text-align:center;color:var(--muted);padding:40px 20px 50px;font-size:.92rem}
   footer a{color:var(--a2);text-decoration:none;font-weight:700}
 
@@ -292,43 +301,43 @@ const DATA = {
       "title": "1 - محاسب",
       "org": "شركة السلاب للسيراميك",
       "when": "",
-      "desc": "إدخال البيانات على الحاسب الآلي والتعامل مع أكثر من 4000 صنف، وإعداد تقارير يومية بالمبيعات."
+      "desc": "إدخال البيانات وإعداد التقارير اليومية للمبيعات."
     },
     {
       "title": "2 - مدير حسابات وأمين خزينة",
       "org": "شركة ندكو للمواد الكيميائية",
       "when": "",
-      "desc": "بدأت أميناً للمخازن، ثم ممسكاً للدفاتر المحاسبية، ثم أميناً للخزينة ومسؤولاً عن الصرف والتوريد."
+      "desc": "أمين مخازن، ثم ممسك دفاتر، ثم أمين خزينة."
     },
     {
       "title": "3 - محاسب",
       "org": "شركة اليانز - فرع التأمين الإجباري",
       "when": "",
-      "desc": "إصدار وثائق التأمين الإجباري عن السيارات."
+      "desc": "إصدار وثائق التأمين الإجباري للسيارات."
     },
     {
       "title": "4 - محاسب",
       "org": "فندق حدائق السلطان - شرم الشيخ",
       "when": "",
-      "desc": "تدقيق معاملات الفندق ومراجعة حسابات الموردين وصرف المستحقات، وإعداد تقارير يومية بالمراجعة والصرف."
+      "desc": "تدقيق المعاملات ومراجعة حسابات الموردين."
     },
     {
       "title": "5 - مدير حسابات",
       "org": "مؤسسة كوادر مكة للمقاولات المعمارية والصيانة والتشغيل",
       "when": "",
-      "desc": "تأسيس نظام محاسبي كامل للمؤسسة، وإعداد دفاتر وملفات لكافة أعمالها، وتنظيم التعامل مع العملاء والموردين، وإعداد ميزانيات معتمدة من مكتب محاسب قانوني."
+      "desc": "تأسيس نظام محاسبي كامل وإعداد الميزانيات."
     },
     {
       "title": "6 - مدير حسابات",
       "org": "مضارب الأمين لصناعة وتعبئة الأرز",
       "when": "",
-      "desc": "مسؤول عن الحسابات كاملة، والتعامل مع البنوك والتحويلات والتصدير، وإعداد التقارير ورفعها شهرياً إلى مجلس إدارة الشركة."
+      "desc": "إدارة الحسابات والبنوك والتصدير وإعداد التقارير."
     },
     {
       "title": "7 - مدير الشركة",
       "org": "شركة الماسة لتعبئة وتوزيع المواد الغذائية",
       "when": "",
-      "desc": "مسؤول عن كافة الأعمال المحاسبية والمشتريات والمبيعات، وتنظيم خطوط الإنتاج، وإعداد الموازنات، والإشراف على خطط التسويق والإعلانات."
+      "desc": "إدارة الحسابات والمشتريات والمبيعات والموازنات."
     },
     {
       "title": "8 - محاسب ومطور برامج",
@@ -463,6 +472,17 @@ const DATA = {
         <div class="panel-body"><div class="panel-inner">${body}</div></div>
       </div>`;
 
+    const expHtml = (arr) => `<div class="exp-grid">
+      ${arr.map((e, i) => `
+        <div class="exp-card">
+          <div class="exp-num">${i + 1}</div>
+          <h3>${esc(String(e.title).replace(/^\d+ - /, ""))}</h3>
+          ${e.org ? `<div class="org">${esc(e.org)}</div>` : ""}
+          ${e.when ? `<div class="when">${esc(e.when)}</div>` : ""}
+          ${e.desc ? `<p>${esc(e.desc)}</p>` : ""}
+        </div>`).join("")}
+    </div>`;
+
     const skillsHtml = `<div class="skills">${d.skills.map(s => `<span class="skill">${esc(s)}</span>`).join("")}</div>`;
 
     const projectsHtml = `<div class="grid">
@@ -480,7 +500,7 @@ const DATA = {
     sections.push(card("more", "مهاراتي وأعمالي وخبراتي",
       panel("p-skills", "المهارات", skillsHtml) +
       panel("p-projects", "أعمالي ومشاريعي", projectsHtml) +
-      panel("p-exp", "الخبرات العملية", entriesHtml(d.experience)) +
+      panel("p-exp", "الخبرات العملية", expHtml(d.experience)) +
       panel("p-edu", "المؤهلات والتعليم", entriesHtml(d.education))
     ));
 
