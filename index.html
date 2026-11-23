@@ -162,6 +162,18 @@
   .exp-card .org{color:#b9a8ff;font-weight:500;font-size:.95rem}
   .exp-card .when{color:var(--muted);font-size:.85rem}
   .exp-card p{color:var(--muted);font-size:.93rem;margin-top:6px}
+  .shape{position:absolute;opacity:.5;animation:drift 14s ease-in-out infinite}
+  .shape.s1{top:14%;right:6%;width:90px;animation-delay:-2s}
+  .shape.s2{top:62%;left:4%;width:70px;animation-delay:-7s}
+  .shape.s3{top:30%;left:12%;width:54px;animation-delay:-4s;opacity:.35}
+  .shape.s4{bottom:10%;right:12%;width:110px;animation-delay:-9s;opacity:.3}
+  @keyframes drift{
+    0%,100%{transform:translateY(0) rotate(0deg)}
+    50%{transform:translateY(-22px) rotate(12deg)}
+  }
+  .ptitle{display:flex;align-items:center;gap:12px}
+  .ptitle i{font-style:normal;font-size:1.3rem;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+    background:rgba(255,255,255,.08);border:1px solid var(--stroke)}
   footer{text-align:center;color:var(--muted);padding:40px 20px 50px;font-size:.92rem}
   footer a{color:var(--a2);text-decoration:none;font-weight:700}
 
@@ -222,6 +234,10 @@
   <div class="blob b1"></div>
   <div class="blob b2"></div>
   <div class="blob b3"></div>
+  <svg class="shape s1" viewBox="0 0 100 100"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b5cf6"/><stop offset="1" stop-color="#00f5d4"/></linearGradient></defs><circle cx="50" cy="50" r="40" fill="none" stroke="url(#g1)" stroke-width="10"/></svg>
+  <svg class="shape s2" viewBox="0 0 100 100"><polygon points="50,8 92,88 8,88" fill="none" stroke="#ff4fd8" stroke-width="8" stroke-linejoin="round"/></svg>
+  <svg class="shape s3" viewBox="0 0 100 100"><path d="M50 5 L58 42 L95 50 L58 58 L50 95 L42 58 L5 50 L42 42 Z" fill="#00f5d4"/></svg>
+  <svg class="shape s4" viewBox="0 0 100 100"><rect x="14" y="14" width="72" height="72" rx="20" fill="none" stroke="#8b5cf6" stroke-width="8" transform="rotate(20 50 50)"/></svg>
 </div>
 
 <div id="intro">
@@ -464,10 +480,12 @@ const DATA = {
           </div>`).join("")}
       </div>`;
 
+    const icons = { "p-skills": "⚡", "p-projects": "🚀", "p-exp": "💼", "p-edu": "🎓" };
+
     const panel = (id, title, body) => `
       <div class="panel" id="${id}">
         <button class="panel-btn" type="button" aria-expanded="false">
-          <span>${esc(title)}</span><span class="ico">+</span>
+          <span class="ptitle"><i>${icons[id] || ""}</i>${esc(title)}</span><span class="ico">+</span>
         </button>
         <div class="panel-body"><div class="panel-inner">${body}</div></div>
       </div>`;
