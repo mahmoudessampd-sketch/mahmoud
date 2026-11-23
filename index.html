@@ -216,6 +216,25 @@
     transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
   .reveal.show{opacity:1;transform:none}
 
+  /* ===== حركات إضافية بنفس ألوان الموقع ===== */
+  .card::before{
+    content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;
+    background:linear-gradient(120deg,var(--a1),var(--a2),var(--a3),var(--a1));background-size:300% 300%;
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+    opacity:0;transition:opacity .5s ease;animation:gradmove 6s linear infinite
+  }
+  .card:hover::before{opacity:1}
+  @keyframes gradmove{to{background-position:300% 50%}}
+
+  @keyframes rise{from{opacity:0;transform:translateY(18px) scale(.94)}to{opacity:1;transform:none}}
+  .panel.open .skill,.panel.open .item,.panel.open .exp-card,.panel.open .pill{
+    animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+
+  .ptitle:hover i{animation:bob .8s ease-in-out infinite}
+  .item .thumb{transition:transform .6s ease}
+  .item:hover .thumb{transform:scale(1.06)}
+
   @media (max-width:600px){
     .card{padding:24px}
     .timeline{padding-right:22px}
@@ -558,6 +577,11 @@ const DATA = {
     const p = btn.closest(".panel");
     const open = p.classList.toggle("open");
     btn.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) {
+      p.querySelectorAll(".skill,.item,.exp-card,.pill").forEach((el, i) => {
+        el.style.animationDelay = (i * 70) + "ms";
+      });
+    }
   });
 
 </script>
